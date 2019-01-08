@@ -1,0 +1,29 @@
+sudo: required
+
+services:
+  - docker
+
+# Build test version of vue test
+before_install:
+  - docker build -t jaychangha/vue-test -f ./client/Dockerfile.dev ./client
+
+# Run test cases
+script:
+  - docker run jaychangha/vue-test npm run test
+
+# If test is successful
+after_success:
+  # Build production version of all projects
+  - docker build -t jaychangha/template-client ./client
+  - docker build -t jaychangha/template-nginx ./ngnix
+  - docker build -t jaychangha/template-server ./server
+  - docker build -t jaychangha/template-worker ./worker
+
+  # Login to the docker hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push images to docker hub
+  - docker push jaychangha/template-client
+  - docker push jaychangha/template-nginx
+  - docker push jaychangha/template-server
+  - docker push jaychangha/template-worker
