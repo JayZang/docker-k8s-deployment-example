@@ -15,7 +15,7 @@ script:
 after_success:
   # Build production version of all projects
   - docker build -t jaychangha/template-client ./client
-  - docker build -t jaychangha/template-nginx ./ngnix
+  - docker build -t jaychangha/template-nginx ./nginx
   - docker build -t jaychangha/template-server ./server
   - docker build -t jaychangha/template-worker ./worker
 

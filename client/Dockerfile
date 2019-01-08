@@ -1,5 +1,6 @@
 FROM node as builder
 WORKDIR /app
+RUN npm install npm@latest -g
 COPY ./package.json ./
 RUN npm install
 COPY ./ ./
