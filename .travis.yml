@@ -27,3 +27,23 @@ after_success:
   - docker push jaychangha/template-nginx
   - docker push jaychangha/template-server
   - docker push jaychangha/template-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: docker-multi-services-template
+  env: DockerMultiServicesTemplate-env
+
+  # Go to AWS S3 to get bucket name(at same region)
+  bucket_name: elasticbeanstalk-us-west-2-553326145434
+
+  # The path in above bucket
+  bucket_path: docker-multi
+
+  # Only try to run the deployment when the branch that was pushed or build up on travis
+  on:
+    branch: master
+
+  acccess_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECURE_KEY
