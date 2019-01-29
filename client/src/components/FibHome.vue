@@ -1,5 +1,7 @@
 <template>
   <div id="FibHome">
+    <h2>Hello, this is docker practice.</h2>
+
     <form @submit.prevent="handleSubmit">
       <label>Enter your index:</label>
       <input v-model="index" />
