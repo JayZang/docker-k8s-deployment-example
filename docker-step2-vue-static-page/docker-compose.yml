@@ -1,0 +1,7 @@
+version: '3'
+services:
+  static-web:
+    build: .
+
+    ports:
+      - 80:80

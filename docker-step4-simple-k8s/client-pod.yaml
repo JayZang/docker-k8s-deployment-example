@@ -1,0 +1,17 @@
+apiVersion: v1
+
+# Types of object
+kind: Pod
+
+metadata:
+  name: client-pod
+  labels:
+    # Key & value are user-defined
+    components: web
+spec:
+  containers:
+    - name: client
+      image: jaychangha/template-worker
+      ports:
+        # The port that cantainer expose
+        - containerPort: 8080

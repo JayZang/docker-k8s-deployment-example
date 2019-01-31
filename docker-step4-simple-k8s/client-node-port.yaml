@@ -1,0 +1,18 @@
+apiVersion: v1
+
+# Types of object
+kind: Service
+
+metadata:
+  name: client-node-port
+spec:
+  type: NodePort
+  ports:
+    - port: 3050          # The port that another pod can access to container in Node
+      targetPort: 8080    # The port that mapping to container
+      nodePort: 31515     # The port that local machine(browser) can access to container
+                          # If this area isn't set, it will be automaticlly set in range of 30000~32767
+
+  # This is corresponding to metadata.labels in Pod of object type(At another config file)
+  selector:
+    components: web

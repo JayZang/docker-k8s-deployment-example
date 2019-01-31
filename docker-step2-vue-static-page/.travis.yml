@@ -1,0 +1,31 @@
+# This just a sample configuration of combining Travis CI and deploy to AWS.
+
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t my-static-web
+
+script:
+  - docker run my-static-web npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "YOUR_EB_APP_NAME"
+  env: "YOUR_EB_APP_ENV_NAME"
+  bucket_name: "YOUR_EB_S3_BUCKET_NAME"
+  bucket_path: "YOUR_EB_APP_NAME"
+  on:
+    branch: master
+  
+  ## Get the keys value at AWS IAM
+  # AWS_ACCESS_KEY is setted at Travis CI
+  access_key_id: $AWS_ACCESS_KEY
+
+  # AWS_SECRET_KEY is setted at Travis CI
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+  
+

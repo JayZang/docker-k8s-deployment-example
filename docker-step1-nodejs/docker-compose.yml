@@ -1,0 +1,42 @@
+version: '3'
+services:
+  service-redis:
+    # Indicate the image to create the container.
+    image: 'redis'
+
+  node-app:
+    # "no"           - Never attempt to restart container if it stops or crashes.
+    # always         - Attempt to restart container for any reason when stopped.
+    # on-failure     - Only restart container with error status( exit(-1) ).
+    # unless-stopped - Always restart unless we forcibly stop it.
+    restart: always
+ 
+    # Dockerfile at the indicated path to build image(One time automatically).
+    # If want re-building the image, Command: docker-compose up --build
+    build: .
+
+    # Port mapping (HOST:CONTAINER)
+    ports:
+      - '80:8080'
+
+    volumes:
+      # The container folder that is not to map to host folder.
+      - /my-app/node_modules
+
+      # The container folder that map to indicated host folder.
+      - .:/my-app
+  
+  tests:
+    build:
+      # Dockerfile path 
+      context: .
+
+      # Dockerfile name, default: Dockerfile
+      dockerfile: Dockerfile
+
+    volumes:
+      - /my-app/node_modules
+      - .:/my-app
+    
+    # Override the default command
+    command: ["npm", "run", "test"]
