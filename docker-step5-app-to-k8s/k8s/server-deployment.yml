@@ -13,7 +13,27 @@ spec:
         component: api
     spec:
       containers:
-      - name: server
-        image: jaychangha/template-server
-        ports:
-        - containerPort: 5000
+        - name: server
+          image: jaychangha/template-server
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGHOST
+              value: postgres-cluster-ip-service
+            - name: PGPORT
+              value: '5432'
+            - name: PGUSER
+              value: postgres
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  #  These fields are set up by secret object 
+                  name: env-var
+                  key: MYPGPASS
+                

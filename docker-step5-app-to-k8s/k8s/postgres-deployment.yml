@@ -29,3 +29,11 @@ spec:
 
               # Volume 下的子目錄
               subPath: postgres
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  #  These fields are set up by secret object 
+                  name: env-var
+                  key: MYPGPASS
+                  
