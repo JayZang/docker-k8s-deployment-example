@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations: 
+    # 可由此 annotations 裡之欄位設置 ingress nginx controller
+    # 更多配置說明：
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
+
+    Kubernetes.io/ingress.class: nginx
+
+    # 將下方設置之路由規則重寫為此路徑開頭
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 3001
