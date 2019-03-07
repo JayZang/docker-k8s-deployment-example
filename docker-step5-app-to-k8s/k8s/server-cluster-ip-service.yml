@@ -3,7 +3,9 @@ kind: Service
 metadata:
   name: server-cluster-ip-service
 spec:
-  type: ClusterIP
+  # 在 GKE 中 ingress-controller 只能連向為 NodePort 或 LoadBalance 的 Service 
+  # type: ClusterIP
+  type: NodePort
   selector:
     component: api
   ports:
