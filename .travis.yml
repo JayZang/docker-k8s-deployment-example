@@ -1,0 +1,62 @@
+sudo: required
+services:
+  - docker
+
+# 設置在 travis 中的環境變數
+env:
+  global:
+    # 使用當前 git 版本 hash 值作為 docker image 的 tag
+    - SHA=$(git rev-parse HEAD)
+
+    # 設置此環境變數可免於執行 gcloud 相關指令時需要的人機交互動作（例如 "確認是否安裝" 等詢問動作）
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+before_install:
+  # 安裝並設置 Google cloud SDK，得以使用 gcloud 指令
+  - curl https://sdk.cloud.google.com | bash > /dev/null
+  - source $HOME/google-cloud-sdk/path.bash.inc
+
+  # 安裝或更新 kubectl
+  - gcloud components update kubectl
+
+  # 將透過 travis cli 加密過後的文件解密，以取得我們要的文件
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in ./docker-step5-app-to-k8s/service-account.json.enc -out service-account.json -d
+
+  # 登入 Google Cloud 帳戶，用以部署 K8s
+  # Service account 需要至 Google Cloud Platform 的 IAM 設置並取得 json 檔案
+  # 再透過 travis cli 指令將 json 檔案加密，用以保護資料在網路上無法被解讀
+  # 在上一步驟可看到先將被加密之文件解密，以在此處可以使用
+  - gcloud auth activate-service-account --key-file service-account.json
+
+  # 選擇 Google Cloud 上之專案(參數為專案ID)
+  # gcloud config set project PROJECT_ID
+  - gcloud config set project simple-app-on-k8s
+
+  # 設置 K8s 叢集之區域，和於 Google Cloud K8s 創建所設置一樣
+  # gcloud config set compute/zone AREA
+  - gcloud config set compute/zone asia-east2-c
+
+  # 選擇 Google Cloud 上所設置之 K8s 叢集名稱
+  # gcloud container clusters get-credentials K8S_CLUSTER_NAME
+  - gcloud container clusters get-credentials my-k8s-standard-cluster
+
+  # 登入 docker，需先在 travis 網頁中設定相關環境變數 ( DOCKER_ID、DOCKER_PASSWORD )
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # 建置測試 Image
+  - docker build -t jaychangha/vue-test -f ./docker-step5-app-to-k8s/client/Dockerfile.dev ./docker-step5-app-to-k8s/client
+
+script:
+  # 在 container 中執行測試
+  - docker run jaychangha/vue-test npm run test
+
+deploy:
+  # 告知 travis 使用自訂撰寫之 script 來部署
+  provider: script
+
+  # script 指令
+  script: bash ./deploy.sh
+
+  on:
+    # 當指定分枝上傳至 github 時才會執行部署動作
+    branch: master
