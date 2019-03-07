@@ -55,7 +55,7 @@ deploy:
   provider: script
 
   # script 指令
-  script: bash ./deploy.sh
+  script: bash ./docker-step5-app-to-k8s/deploy.sh
 
   on:
     # 當指定分枝上傳至 github 時才會執行部署動作
