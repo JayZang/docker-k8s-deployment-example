@@ -8,7 +8,7 @@ metadata:
     # https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
 
     # Kubernetes.io/ingress.class: nginx
-    Kubernetes.io/ingress.class: gce
+    Kubernetes.io/ingress.class: nginx
 
     # 將下方設置之路由規則重寫為此路徑開頭
     nginx.ingress.kubernetes.io/rewrite-target: /
@@ -20,7 +20,7 @@ spec:
             backend:
               serviceName: client-cluster-ip-service
               servicePort: 3000
-          - path: /api/*
+          - path: /api/
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 3001
