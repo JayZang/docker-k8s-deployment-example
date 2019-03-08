@@ -10,17 +10,17 @@ metadata:
     Kubernetes.io/ingress.class: nginx
 
     # 將下方設置之路由規則重寫為此路徑開頭
-    # nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.org/rewrites: "serviceName=client-cluster-ip-service rewrite=/; serviceName=server-cluster-ip-service rewrite=/"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # nginx.org/rewrites: "serviceName=client-cluster-ip-service rewrite=/; serviceName=server-cluster-ip-service rewrite=/"
 spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /?(.*)
             backend:
               serviceName: client-cluster-ip-service
               servicePort: 3000
-          - path: /api/
+          - path: /api/?(.*)
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 3001
