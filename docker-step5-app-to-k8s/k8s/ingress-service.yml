@@ -7,11 +7,17 @@ metadata:
     # 更多配置說明：
     # https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
 
+    # 使用 nginx ingress controller(需手動部署相關物件)
+    # 部署 nginx ingress controller 方式：
+    # https://kubernetes.github.io/ingress-nginx/deploy/#using-helm
+    # 假使未設置此欄位部署至 GCE 時，預設值是 'gce'，則將使用 GCE 內建的 GCE ingress controller
     Kubernetes.io/ingress.class: nginx
 
     # 將下方設置之路由規則重寫為此路徑開頭
+    # 此為最新 Kubernetes 發佈之 ingress controller 的 rewite 寫法
+    # 文檔說明：
+    # https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
     nginx.ingress.kubernetes.io/rewrite-target: /$1
-    # nginx.org/rewrites: "serviceName=client-cluster-ip-service rewrite=/; serviceName=server-cluster-ip-service rewrite=/"
 spec:
   rules:
     - http:
