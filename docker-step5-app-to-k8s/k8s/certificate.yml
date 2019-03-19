@@ -1,0 +1,38 @@
+# 文件參考：
+# https://docs.cert-manager.io/en/latest/tasks/issuing-certificates/index.html
+# https://docs.cert-manager.io/en/latest/tasks/acme/issuing-certificates.html
+# https://docs.cert-manager.io/en/latest/tutorials/acme/http-validation.html
+# 設定憑證內容，並指定使用何種發布機構
+
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: house-pusher-tls
+spec:
+  # 存放憑證的 Secret 物件名稱
+  secretName: letsencrypt-cert-secret
+
+  # 指定用何種憑證發布機構
+  issuerRef: 
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  
+  # 憑證簽署網域名稱
+  commomName: house-pusher.com
+
+  # 其餘 SANs
+  # https://gs.cloudmax.com.tw/support/support_ssl_847.html
+  dnsNames: 
+    - house-pusher.com
+    - www.house-pusher.com
+
+  # 如果所使用之憑證發布機構的協議為 ACME，則需要設置此欄位資訊
+  acme: 
+    config:
+      - http01:
+          # 使用 nginx-ingress
+          # 若為 gke-ingress 請查看上方文件設置
+          ingressClass: nginx
+        domains:
+          - house-pusher.com
+          - www.house-pusher.com
