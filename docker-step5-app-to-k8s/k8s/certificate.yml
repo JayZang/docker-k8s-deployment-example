@@ -14,7 +14,8 @@ spec:
 
   # 指定用何種憑證發布機構
   issuerRef: 
-    name: letsencrypt-prod
+    # name: letsencrypt-prod
+    name: letsencrypt-staging
     kind: ClusterIssuer
   
   # 憑證簽署網域名稱
